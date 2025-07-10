@@ -2,6 +2,11 @@
 
 This is a simple web application that allows you to check the current weather and the forecast for the next few days for any city in the world.
 
+
+## Preview
+
+![App preview](./img/preview.png)
+
 ## Features
 
 - **City search:** Enter the name of a city to view its current weather.
