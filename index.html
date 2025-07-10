@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clima - Weather App</title>
+    <title>Weather App</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <h1>Weather App</h1>
-        <form id="form-ciudad">
-            <input type="text" id="ciudad" placeholder="Ingresa una ciudad" required>
-            <button type="submit">Buscar</button>
+        <form id="form-city">
+            <input type="text" id="city" placeholder="Enter a city" required>
+            <button type="submit">Search</button>
         </form>
-        <div id="clima" class="clima-container" style="display:none;">
-            <h2 id="nombre-ciudad"></h2>
-            <div class="info-principal">
-                <span id="icono"></span>
+        <div id="weather" class="weather-container" style="display:none;">
+            <h2 id="city-name"></h2>
+            <div class="main-info">
+                <span id="icon"></span>
                 <span id="temp"></span>
-                <span id="descripcion"></span>
+                <span id="description"></span>
             </div>
-            <div class="info-extra">
-                <span id="precipitacion"></span>
-                <span id="humedad"></span>
-                <span id="viento"></span>
+            <div class="extra-info">
+                <span id="precipitation"></span>
+                <span id="humidity"></span>
+                <span id="wind"></span>
             </div>
-            <div class="grafica-horas">
-                <h3>Temperatura por horas</h3>
-                <canvas id="graficaTempHoras" height="80"></canvas>
+            <div class="hourly-chart">
+                <h3>Hourly Temperature</h3>
+                <canvas id="hourlyTempChart" height="80"></canvas>
             </div>
-            <div class="pronostico-dias">
-                <h3>Próximos días</h3>
-                <div id="dias-container" class="dias-container"></div>
+            <div class="daily-forecast">
+                <h3>Next Days</h3>
+                <div id="days-container" class="days-container"></div>
             </div>
         </div>
         <div id="error" class="error"></div>
     </div>
     <script src="app.js"></script>
 </body>
-</html> 
+</html>

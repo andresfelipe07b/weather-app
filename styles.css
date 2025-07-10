@@ -66,7 +66,7 @@ button:hover {
     background: #e6be00;
 }
 
-.clima-container {
+.weather-container {
     background: #1a1a1a;
     border-radius: 12px;
     padding: 20px;
@@ -74,7 +74,7 @@ button:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.info-principal {
+.main-info {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -82,22 +82,16 @@ button:hover {
     margin-bottom: 10px;
 }
 
-.info-principal img {
+.main-info img {
     width: 60px;
     height: 60px;
 }
 
-.info-extra {
+.extra-info {
     display: flex;
     gap: 20px;
     font-size: 1rem;
     opacity: 0.8;
-}
-
-.error {
-    color: #ff4d4d;
-    margin-top: 16px;
-    text-align: center;
 }
 
 .grafica-horas {
@@ -119,7 +113,7 @@ canvas#graficaTempHoras {
     border-radius: 8px;
 }
 
-.pronostico-dias {
+.daily-forecast {
     background: #232323;
     border-radius: 12px;
     padding: 16px;
@@ -129,13 +123,13 @@ canvas#graficaTempHoras {
     box-sizing: border-box;
     overflow: hidden;
 }
-.pronostico-dias h3 {
+.daily-forecast h3 {
     margin: 0 0 8px 0;
     font-size: 1.1rem;
     color: #ffd600;
     font-weight: 500;
 }
-.dias-container {
+.days-container {
     display: flex;
     gap: 16px;
     justify-content: flex-start;
@@ -146,15 +140,15 @@ canvas#graficaTempHoras {
     scrollbar-width: thin;
     scrollbar-color: #ffd600 #232323;
 }
-.dias-container::-webkit-scrollbar {
+.days-container::-webkit-scrollbar {
     height: 6px;
     background: #232323;
 }
-.dias-container::-webkit-scrollbar-thumb {
+.days-container::-webkit-scrollbar-thumb {
     background: #ffd600;
     border-radius: 4px;
 }
-.dia {
+.day {
     background: #181818;
     border-radius: 10px;
     padding: 10px 8px;
@@ -164,17 +158,13 @@ canvas#graficaTempHoras {
     box-shadow: 0 1px 4px rgba(0,0,0,0.10);
     flex: 0 0 auto;
 }
-.dia .icono-dia {
+.day .icon-day {
     display: block;
     margin: 0 auto 4px auto;
     width: 36px;
     height: 36px;
 }
-.dia .temp-dia {
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-.dia .minmax {
+.day .minmax {
     font-size: 0.9rem;
     color: #ffd600;
-} 
+}

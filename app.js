@@ -1,3 +1,4 @@
+const url = "https://weather-app-backend-production-1f33.up.railway.app";
 document.getElementById('form-city').addEventListener('submit', async function(e) {
     e.preventDefault();
     const city = document.getElementById('city').value;
@@ -5,11 +6,10 @@ document.getElementById('form-city').addEventListener('submit', async function(e
     const errorDiv = document.getElementById('error');
     weatherDiv.style.display = 'none';
     errorDiv.textContent = '';
-    const url = "https://weather-app-backend-production-1f33.up.railway.app";
 
     try {
         // Current weather
-        const res = await fetch(`${url}/api/weather?ciudad=${encodeURIComponent(city)}`);
+        const res = await fetch(`${url}/api/weather?city=${encodeURIComponent(city)}`);
         if (!res.ok) throw new Error('Could not fetch weather');
         const data = await res.json();
 
@@ -47,7 +47,7 @@ function loadChartJs(callback) {
 }
 
 async function getForecast(city) {
-    const res = await fetch(`${url}/api/forecast?ciudad=${encodeURIComponent(city)}`);
+    const res = await fetch(`${url}/api/forecast?city=${encodeURIComponent(city)}`);
     if (!res.ok) throw new Error('Could not fetch forecast');
     return await res.json();
 }
