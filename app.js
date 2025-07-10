@@ -1,44 +1,44 @@
-document.getElementById('form-ciudad').addEventListener('submit', async function(e) {
+document.getElementById('form-city').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const ciudad = document.getElementById('ciudad').value;
-    const climaDiv = document.getElementById('clima');
+    const city = document.getElementById('city').value;
+    const weatherDiv = document.getElementById('weather');
     const errorDiv = document.getElementById('error');
-    climaDiv.style.display = 'none';
+    weatherDiv.style.display = 'none';
     errorDiv.textContent = '';
-    const url ="https://weather-app-backend-production-1f33.up.railway.app";
+    const url = "https://weather-app-backend-production-1f33.up.railway.app";
 
     try {
-        // Clima actual
-        const res = await fetch(`${url}/api/weather?ciudad=${encodeURIComponent(ciudad)}`);
-        if (!res.ok) throw new Error('No se pudo obtener el clima');
+        // Current weather
+        const res = await fetch(`${url}/api/weather?ciudad=${encodeURIComponent(city)}`);
+        if (!res.ok) throw new Error('Could not fetch weather');
         const data = await res.json();
 
-        document.getElementById('nombre-ciudad').textContent = `${data.name}, ${data.sys.country}`;
+        document.getElementById('city-name').textContent = `${data.name}, ${data.sys.country}`;
         document.getElementById('temp').textContent = `${Math.round(data.main.temp)}°C`;
-        document.getElementById('descripcion').textContent = data.weather[0].description;
-        document.getElementById('humedad').textContent = `Humedad: ${data.main.humidity}%`;
-        document.getElementById('viento').textContent = `Viento: ${data.wind.speed} m/s`;
-        document.getElementById('icono').innerHTML = `<img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="icono clima">`;
-        // Probabilidad de precipitación (no está en weather, pero sí en forecast)
-        document.getElementById('precipitacion').textContent = '';
+        document.getElementById('description').textContent = data.weather[0].description;
+        document.getElementById('humidity').textContent = `Humidity: ${data.main.humidity}%`;
+        document.getElementById('wind').textContent = `Wind: ${data.wind.speed} m/s`;
+        document.getElementById('icon').innerHTML = `<img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="weather icon">`;
+        // Precipitation probability (not in weather, but in forecast)
+        document.getElementById('precipitation').textContent = '';
 
-        // Pronóstico extendido
-        const forecast = await obtenerPronostico(ciudad);
-        // Probabilidad de precipitación próxima hora
+        // Extended forecast
+        const forecast = await getForecast(city);
+        // Precipitation probability next hour
         if (forecast.list[0].pop !== undefined) {
-            document.getElementById('precipitacion').textContent = `Prob. precipitación: ${Math.round(forecast.list[0].pop * 100)}%`;
+            document.getElementById('precipitation').textContent = `Precipitation chance: ${Math.round(forecast.list[0].pop * 100)}%`;
         }
-        mostrarGraficaHoras(forecast.list);
-        mostrarPronosticoDias(forecast.list);
+        showHourlyChart(forecast.list);
+        showDailyForecast(forecast.list);
 
-        climaDiv.style.display = 'block';
+        weatherDiv.style.display = 'block';
     } catch (err) {
-        errorDiv.textContent = 'No se pudo obtener el clima para esa ciudad.';
+        errorDiv.textContent = 'Could not fetch weather for that city.';
     }
 });
 
-// Cargar Chart.js dinámicamente
-function cargarChartJs(callback) {
+// Dynamically load Chart.js
+function loadChartJs(callback) {
     if (window.Chart) return callback();
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -46,25 +46,25 @@ function cargarChartJs(callback) {
     document.head.appendChild(script);
 }
 
-async function obtenerPronostico(ciudad) {
-    const res = await fetch(`${url}/api/forecast?ciudad=${encodeURIComponent(ciudad)}`);
-    if (!res.ok) throw new Error('No se pudo obtener el pronóstico');
+async function getForecast(city) {
+    const res = await fetch(`${url}/api/forecast?ciudad=${encodeURIComponent(city)}`);
+    if (!res.ok) throw new Error('Could not fetch forecast');
     return await res.json();
 }
 
-function mostrarGraficaHoras(lista) {
-    const horas = lista.slice(0, 8).map(item => {
-        const fecha = new Date(item.dt * 1000);
-        return fecha.getHours() + ':00';
+function showHourlyChart(list) {
+    const hours = list.slice(0, 8).map(item => {
+        const date = new Date(item.dt * 1000);
+        return date.getHours() + ':00';
     });
-    const temps = lista.slice(0, 8).map(item => item.main.temp);
-    cargarChartJs(() => {
-        const ctx = document.getElementById('graficaTempHoras').getContext('2d');
-        if (window.graficaTemp) window.graficaTemp.destroy();
-        window.graficaTemp = new Chart(ctx, {
+    const temps = list.slice(0, 8).map(item => item.main.temp);
+    loadChartJs(() => {
+        const ctx = document.getElementById('hourlyTempChart').getContext('2d');
+        if (window.hourlyTempChartInstance) window.hourlyTempChartInstance.destroy();
+        window.hourlyTempChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: horas,
+                labels: hours,
                 datasets: [{
                     label: 'Temp (°C)',
                     data: temps,
@@ -87,31 +87,31 @@ function mostrarGraficaHoras(lista) {
     });
 }
 
-function mostrarPronosticoDias(lista) {
-    // Agrupar por día
-    const dias = {};
-    lista.forEach(item => {
-        const fecha = new Date(item.dt * 1000);
-        const dia = fecha.toLocaleDateString('es-CO', { weekday: 'short' });
-        if (!dias[dia]) dias[dia] = [];
-        dias[dia].push(item);
+function showDailyForecast(list) {
+    // Group by day
+    const days = {};
+    list.forEach(item => {
+        const date = new Date(item.dt * 1000);
+        const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+        if (!days[day]) days[day] = [];
+        days[day].push(item);
     });
-    // Tomar los próximos 6 días (excluyendo hoy)
-    const diasKeys = Object.keys(dias).slice(1, 7);
-    const diasContainer = document.getElementById('dias-container');
-    diasContainer.innerHTML = '';
-    diasKeys.forEach(dia => {
-        const items = dias[dia];
+    // Take next 6 days (excluding today)
+    const daysKeys = Object.keys(days).slice(1, 7);
+    const daysContainer = document.getElementById('days-container');
+    daysContainer.innerHTML = '';
+    daysKeys.forEach(day => {
+        const items = days[day];
         const temps = items.map(i => i.main.temp);
         const min = Math.round(Math.min(...temps));
         const max = Math.round(Math.max(...temps));
-        const icono = items[0].weather[0].icon;
-        diasContainer.innerHTML += `
-            <div class="dia">
-                <span>${dia}</span>
-                <img class="icono-dia" src="https://openweathermap.org/img/wn/${icono}.png" alt="icono">
+        const icon = items[0].weather[0].icon;
+        daysContainer.innerHTML += `
+            <div class="day">
+                <span>${day}</span>
+                <img class="icon-day" src="https://openweathermap.org/img/wn/${icon}.png" alt="icon">
                 <div class="minmax">${max}° / ${min}°</div>
             </div>
         `;
     });
-} 
+}
